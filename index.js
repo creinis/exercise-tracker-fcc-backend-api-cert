@@ -146,6 +146,13 @@ app.get("/api/users/:_id/logs", async (req, res) => {
 })
 
 
-const listener = app.listen(process.env.PORT || 3000, () => {
-  console.log('Your app is listening on port ' + listener.address().port)
-})
+const server = app.listen(process.env.PORT || 3000, () => {
+  console.log(`Your app is listening on port ${server.address().port}`);
+});
+
+const closeServer = async () => {
+  await mongoose.connection.close();
+  server.close();
+};
+
+module.exports = { app, server, closeServer };

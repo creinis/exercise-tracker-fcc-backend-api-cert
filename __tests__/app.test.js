@@ -1,13 +1,8 @@
 const request = require('supertest');
-const mongoose = require('mongoose');
-const app = require('../index');
-
-beforeAll(async () => {
-  await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-});
+const { app, closeServer, server } = require('../index');
 
 afterAll(async () => {
-  await mongoose.connection.close();
+  await closeServer();
 });
 
 describe('User Endpoints', () => {
