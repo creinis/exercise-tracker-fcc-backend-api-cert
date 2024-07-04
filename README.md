@@ -1,4 +1,4 @@
-## exercise-tracker
+## Exercise Tracker Microservice
 
 ###### Technologies:
 <p align="center">
@@ -9,7 +9,7 @@
 </p>
 
 ## Try it!
-link
+https://exercise-tracker-neon-five.vercel.app/
 
 ### Functionality
 
