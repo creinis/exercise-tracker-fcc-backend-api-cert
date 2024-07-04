@@ -14,6 +14,9 @@
         margin: 25px;
         color: #222;
         background-color: #f5f5f5;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
       }
       
       h1 {
@@ -64,43 +67,119 @@
         background-color: #FFFEC4;
         padding: 2px;
       }
-      
     </style>
   </head>
 
   <body>
     <div class="container">
-      <h1>Exercise tracker</h1>
-      <form action="/api/users" method="post">
+      <h1>Exercise Tracker</h1>
+      
+      <!-- Create New User Form -->
+      <form id="create-user-form" action="/api/users" method="post">
         <h3>Create a New User</h3>
         <p><code>POST /api/users</code></p>
-        <input id="uname" type="text" name="username" placeholder="username" />
+        <input id="username" type="text" name="username" placeholder="username" />
         <input type="submit" value="Submit" />
       </form>
-      <form id="exercise-form" method="post">
-        <h3>Add exercises</h3>
+      
+      <!-- Feedback for New User -->
+      <div id="user-feedback"></div>
+  
+      <!-- Add Exercise Form -->
+      <form id="add-exercise-form" method="post">
+        <h3>Add Exercises</h3>
         <p><code>POST /api/users/:_id/exercises</code></p>
-        <input id="uid" type="text" name=":_id" placeholder=":_id" />
+        <input id="user-id" type="text" name=":_id" placeholder=":_id" />
         <input id="desc" type="text" name="description" placeholder="description*" />
         <input id="dur" type="text" name="duration" placeholder="duration* (mins.)" />
         <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" />
         <input type="submit" value="Submit" />
       </form>
-      <p>
-        <strong>GET user's exercise log: </strong>
-        <code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code>
-      </p>
-      <p><strong>[ ]</strong> = optional</p>
-      <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
+      
+      <!-- Feedback for Exercise -->
+      <div id="exercise-feedback"></div>
+  
+      <!-- Get User Logs Form -->
+      <form id="get-logs-form" method="get">
+        <h3>Get User Logs</h3>
+        <p><code>GET /api/users/:_id/logs?[from][&to][&limit]</code></p>
+        <input id="logs-user-id" type="text" name=":_id" placeholder=":_id" />
+        <input id="from" type="text" name="from" placeholder="from (yyyy-mm-dd)" />
+        <input id="to" type="text" name="to" placeholder="to (yyyy-mm-dd)" />
+        <input id="limit" type="text" name="limit" placeholder="limit" />
+        <input type="submit" value="Submit" />
+      </form>
+      
+      <!-- Feedback for Logs -->
+      <div id="logs-feedback"></div>
+  
+      <!-- List All Users -->
+      <button id="list-users-button">List All Users</button>
+      <div id="all-users"></div>
     </div>
+  
     <script>
-      const exerciseForm = document.getElementById("exercise-form");
-
-      exerciseForm.addEventListener("submit", () => {
-        const userId = document.getElementById("uid").value;
-        exerciseForm.action = `/api/users/${userId}/exercises`;
-
-        exerciseForm.submit();
+      document.getElementById('create-user-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const response = await fetch('/api/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username }),
+        });
+        const data = await response.json();
+        document.getElementById('user-feedback').innerHTML = `<p>Created user: <code>${data.username}</code> with ID: <code>${data._id}</code></p>`;
+      });
+  
+      document.getElementById('add-exercise-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const userId = document.getElementById('user-id').value;
+        const description = document.getElementById('desc').value;
+        const duration = document.getElementById('dur').value;
+        const date = document.getElementById('date').value;
+        const response = await fetch(`/api/users/${userId}/exercises`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ description, duration, date }),
+        });
+        const data = await response.json();
+        document.getElementById('exercise-feedback').innerHTML = `<p>Added exercise for user <code>${data.username}</code>: <br>Description: <code>${data.description}</code>, Duration: <code>${data.duration}</code> minutes, Date: <code>${data.date}</code></p>`;
+      });
+  
+      document.getElementById('get-logs-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const userId = document.getElementById('logs-user-id').value;
+        const from = document.getElementById('from').value;
+        const to = document.getElementById('to').value;
+        const limit = document.getElementById('limit').value;
+        const url = new URL(`/api/users/${userId}/logs`, window.location.origin);
+        if (from) url.searchParams.append('from', from);
+        if (to) url.searchParams.append('to', to);
+        if (limit) url.searchParams.append('limit', limit);
+        const response = await fetch(url);
+        const data = await response.json();
+        let logHtml = `<p>User: <code>${data.username}</code>, Count: <code>${data.count}</code>, ID: <code>${data._id}</code></p>`;
+        logHtml += '<ul>';
+        data.log.forEach(ex => {
+          logHtml += `<li>Description: <code>${ex.description}</code>, Duration: <code>${ex.duration}</code> minutes, Date: <code>${ex.date}</code></li>`;
+        });
+        logHtml += '</ul>';
+        document.getElementById('logs-feedback').innerHTML = logHtml;
+      });
+  
+      document.getElementById('list-users-button').addEventListener('click', async function() {
+        const response = await fetch('/api/users');
+        const data = await response.json();
+        let usersHtml = '<ul>';
+        data.forEach(user => {
+          usersHtml += `<li>Username: <code>${user.username}</code>, ID: <code>${user._id}</code></li>`;
+        });
+        usersHtml += '</ul>';
+        document.getElementById('all-users').innerHTML = usersHtml;
       });
     </script>
   </body>
