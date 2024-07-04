@@ -18,14 +18,17 @@
         text-align: center;
         align-items: center;
       }
-      
+      hr {
+        margin-bottom: 20px;
+      }
       h1 {
         font-weight: bold;
         
       }
       
       p {
-        max-width: 900px;
+        
+        text-align: center;
       }
       
       form {
@@ -98,7 +101,12 @@
       
       <!-- Feedback for Exercise -->
       <div id="exercise-feedback"></div>
-  
+      <p>
+        by 
+        <a href="http://www.freecodecamp.com">freeCodeCamp</a>
+      </p>
+      <hr/>
+ 
       <!-- Get User Logs Form -->
       <form id="get-logs-form" method="get">
         <h3>Get User Logs</h3>
@@ -117,7 +125,12 @@
       <button id="list-users-button">List All Users</button>
       <div id="all-users"></div>
     </div>
-  
+    <hr/>
+      <p>
+        Improved by 
+        <a href="https://github.com/creinis">Carlos Reinis</a>
+      </p>
+      
     <script>
       document.getElementById('create-user-form').addEventListener('submit', async function(e) {
         e.preventDefault();
