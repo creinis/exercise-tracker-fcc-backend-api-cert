@@ -9,7 +9,7 @@
 </p>
 
 ## Try it!
-https://exercise-tracker-neon-five.vercel.app/
+https://exercise-tracker-three-peach.vercel.app/
 
 ### Functionality
 
