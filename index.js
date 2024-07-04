@@ -155,4 +155,4 @@ const closeServer = async () => {
   server.close();
 };
 
-module.exports = { app, server, closeServer };
+module.exports = app;

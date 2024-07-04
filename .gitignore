@@ -4,3 +4,8 @@ node_modules
 # Relatórios de teste
 /reports
 /test-report
+
+# Logs
+/logs
+*.log
+npm-debug.log*
